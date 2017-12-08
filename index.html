@@ -398,11 +398,6 @@
             });
         });
 
-        function thisOne(current) {
-          socket.emit('myside', current.id);
-          socket.emit('guess', current.id);
-        }
-
         socket.on('chat message', function(msg){
           $('#messages').append($('<li>').text(msg));
         });
@@ -441,6 +436,11 @@
           }
         }
 
+        function thisOne(current) {
+          socket.emit('myside', current.id);
+          socket.emit('guess', current.id);
+        }
+
         function currentCell(current) {
           if (current.value === 'x') {
             alert("Stop it");
@@ -474,13 +474,11 @@
         function guessYours(current) {
           var cell = +current - 100;
           if (document.getElementById(cell).value==='x') {
-              hits++;
               document.getElementById(cell).value='';
               document.getElementById(cell).style.backgroundColor="black";
           } else if (document.getElementById(cell).style.backgroundColor!=="black") {
             document.getElementById(cell).style.backgroundColor="aqua";
           }
-          document.getElementById("Gcount").innerHTML = hits + ' hits';
           if(victoryCheck()) {
             alert("You lose!");
           }
