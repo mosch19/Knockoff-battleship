@@ -13,6 +13,7 @@
     "websocket"
   ],
   "scripts": {
+    "start" : "node index.js"
   },
   "addons": [
   ],

@@ -1,39 +1,519 @@
 <!doctype html>
 <html>
   <head>
-    <title>Socket.IO chat</title>
+    <title> Buttle-Schipt. </title>
+    <link href="https://fonts.googleapis.com/css?family=Play" rel="stylesheet">
     <style>
-      * { margin: 0; padding: 0; box-sizing: border-box; }
-      body { font: 13px Helvetica, Arial; }
-      form { background: #000; padding: 3px; position: fixed; bottom: 0; width: 100%; }
-      form input { border: 0; padding: 10px; width: 90%; margin-right: .5%; }
-      form button { width: 9%; background: rgb(130, 224, 255); border: none; padding: 10px; }
-      #messages { list-style-type: none; margin: 0; padding: 0; }
-      #messages li { padding: 5px 10px; }
-      #messages li:nth-child(odd) { background: #eee; }
-      #messages { margin-bottom: 40px }
-    </style>
+      form { background: transparent; padding: 3px; position: fixed; bottom: 0; }
+      form input { border: 0; padding: 10px; width: 90%; margin-right: .5% }
+      form button { width: 80%; border: none; padding: 10px; }
+      #messages {
+        list-style-type: none;
+        text-align: right;
+        margin-bottom: 40px;
+        position: fixed;
+        right: 0px;
+        top: 0px;
+        width: 240px;
+        height 98%;
+        padding: 10px;
+        background-color: transparent;
+      }
+      #messages li { color: aqua; }
+      #messages li:nth-child(odd) { color: hotpink; }
+      #status {
+        list-style-type: none;
+        margin: auto;
+        margin-bottom: 40px;
+        position: fixed;
+        left: 0px;
+        top: 0px;
+        width: 240px;
+        height 98%;
+        padding: 10px;
+        color: mediumspringgreen;
+        background-color: transparent;
+      }
+      body {
+        font-family: "Play";
+        background-image: url("https://d2v9y0dukr6mq2.cloudfront.net/video/thumbnail/moving-through-stars-in-space_-1zccenlb__F0000.png");
+        background-color: grey;
+        padding-left: 240px;
+        padding-right: 240px;
+        min-width: 1000px;
+        top: 0px;
+        bottom: 0px;
+      }
+      a {
+        color: purple;
+      }
+      a:hover {
+        color: teal;
+      }
+
+      .your_grid {
+        float: left;
+        margin: auto;
+        width: 500px;
+        height: 500px;
+        padding-left: 20px;
+        padding-right:20px;
+      }
+      .enemy_grid {
+        float: right;
+      	margin: auto;
+      	width: 500px;
+      	height: 500px;
+        padding-left: 20px;
+        padding-right: 20px;
+      }
+      .cell {
+        width: 50px;
+        height: 50px;
+        outline: 1px solid;
+        float: left;
+        text-align: center;
+        background-color: white;
+      }
+
+      .info {
+        left: 240px;
+        margin: auto;
+        text-align: center;
+        font-size: 20px;
+        color: white;
+      }
+      #title {
+        font-size: 25px;
+        color: white;
+      }
+      #words {
+      	font-size: 15px;
+      	color: white;
+      }
+      #your_ships {
+        left: 240px;
+      	font-size: 20px;
+      	color: white;
+      }
+      #enemy_location {
+      	font-size: 20px;
+      	color: white;
+      }
+      #game {
+        width: 100%;
+        top: 0px;
+        left: 240px;
+        right: 240px;
+        bottom: 0px;
+      }
+
+      #chat {
+        color: white;
+        position: absolute;
+        right: 0px;
+        width: 220px;
+        height 98%;
+        padding: 10px;
+        background-color: transparent;
+      }
+
+      #guess {
+        color: white;
+        position: absolute;
+        left: 0px;
+        width: 220px;
+        height 98%;
+        padding: 10px;
+        background-color: transparent;
+      }
+
+      #b1 {
+        background: hotpink;
+        position: fixed;
+        bottom: 0;
+        width: 220px;
+        border: none;
+        padding: 10px;
+      }
+
+      #b2 {
+        background: rgb(130, 224, 255);
+      }
+
+      #SEND {
+        margin: auto;
+        background-color: transparent;
+        background: mediumspringgreen;
+      }
+
+      </style>
   </head>
+
   <body>
-    <ul id="messages"></ul>
-    <form action="">
-      <input id="m" autocomplete="off" /><button>Send</button>
-    </form>
-    <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
-    <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
-    <script>
-      $(function () {
+    <div id="game">
+      <h2 class="info" id="title">
+        Welcome to Buttle-Schipt, the stupidest game of Battleship. Good luck!
+      </h2>
+      <br>
+      <p class="info" id="words">
+        Once <strong> 100% </strong> of enemy ships are destroyed, you win. </a> But if all your ships are destroyed, you lose.
+      </p>
+      <br>
+      <div class="your_grid">
+        <p class="info" id="your_ships">
+          YOUR SHIPS
+        </p> <p class="info" id="Pcount"> Placed Count </p>
+        <br>
+      <div class="cell" id="1"  onclick="currentCell(this);"></div>
+      <div class="cell" id="2"  onclick="currentCell(this);"></div>
+      <div class="cell" id="3"  onclick="currentCell(this);"></div>
+      <div class="cell" id="4"  onclick="currentCell(this);"></div>
+      <div class="cell" id="5"  onclick="currentCell(this);"></div>
+      <div class="cell" id="6"  onclick="currentCell(this);"></div>
+      <div class="cell" id="7"  onclick="currentCell(this);"></div>
+      <div class="cell" id="8"  onclick="currentCell(this);"></div>
+      <div class="cell" id="9"  onclick="currentCell(this);"></div>
+      <div class="cell" id="10" onclick="currentCell(this);"></div>
+      <div class="cell" id="11" onclick="currentCell(this);"></div>
+      <div class="cell" id="12" onclick="currentCell(this);"></div>
+      <div class="cell" id="13" onclick="currentCell(this);"></div>
+      <div class="cell" id="14" onclick="currentCell(this);"></div>
+      <div class="cell" id="15" onclick="currentCell(this);"></div>
+      <div class="cell" id="16" onclick="currentCell(this);"></div>
+      <div class="cell" id="17" onclick="currentCell(this);"></div>
+      <div class="cell" id="18" onclick="currentCell(this);"></div>
+      <div class="cell" id="19" onclick="currentCell(this);"></div>
+      <div class="cell" id="20" onclick="currentCell(this);"></div>
+      <div class="cell" id="21" onclick="currentCell(this);"></div>
+      <div class="cell" id="22" onclick="currentCell(this);"></div>
+      <div class="cell" id="23" onclick="currentCell(this);"></div>
+      <div class="cell" id="24" onclick="currentCell(this);"></div>
+      <div class="cell" id="25" onclick="currentCell(this);"></div>
+      <div class="cell" id="26" onclick="currentCell(this);"></div>
+    	<div class="cell" id="27" onclick="currentCell(this);"></div>
+    	<div class="cell" id="28" onclick="currentCell(this);"></div>
+    	<div class="cell" id="29" onclick="currentCell(this);"></div>
+    	<div class="cell" id="30" onclick="currentCell(this);"></div>
+    	<div class="cell" id="31" onclick="currentCell(this);"></div>
+    	<div class="cell" id="32" onclick="currentCell(this);"></div>
+    	<div class="cell" id="33" onclick="currentCell(this);"></div>
+    	<div class="cell" id="34" onclick="currentCell(this);"></div>
+    	<div class="cell" id="35" onclick="currentCell(this);"></div>
+    	<div class="cell" id="36" onclick="currentCell(this);"></div>
+    	<div class="cell" id="37" onclick="currentCell(this);"></div>
+    	<div class="cell" id="38" onclick="currentCell(this);"></div>
+    	<div class="cell" id="39" onclick="currentCell(this);"></div>
+    	<div class="cell" id="40" onclick="currentCell(this);"></div>
+    	<div class="cell" id="41" onclick="currentCell(this);"></div>
+    	<div class="cell" id="42" onclick="currentCell(this);"></div>
+    	<div class="cell" id="43" onclick="currentCell(this);"></div>
+    	<div class="cell" id="44" onclick="currentCell(this);"></div>
+    	<div class="cell" id="45" onclick="currentCell(this);"></div>
+    	<div class="cell" id="46" onclick="currentCell(this);"></div>
+    	<div class="cell" id="47" onclick="currentCell(this);"></div>
+    	<div class="cell" id="48" onclick="currentCell(this);"></div>
+    	<div class="cell" id="49" onclick="currentCell(this);"></div>
+      <div class="cell" id="50" onclick="currentCell(this);"></div>
+      <div class="cell" id="51" onclick="currentCell(this);"></div>
+    	<div class="cell" id="52" onclick="currentCell(this);"></div>
+    	<div class="cell" id="53" onclick="currentCell(this);"></div>
+    	<div class="cell" id="54" onclick="currentCell(this);"></div>
+    	<div class="cell" id="55" onclick="currentCell(this);"></div>
+    	<div class="cell" id="56" onclick="currentCell(this);"></div>
+    	<div class="cell" id="57" onclick="currentCell(this);"></div>
+    	<div class="cell" id="58" onclick="currentCell(this);"></div>
+    	<div class="cell" id="59" onclick="currentCell(this);"></div>
+    	<div class="cell" id="60" onclick="currentCell(this);"></div>
+    	<div class="cell" id="61" onclick="currentCell(this);"></div>
+    	<div class="cell" id="62" onclick="currentCell(this);"></div>
+    	<div class="cell" id="63" onclick="currentCell(this);"></div>
+    	<div class="cell" id="64" onclick="currentCell(this);"></div>
+    	<div class="cell" id="65" onclick="currentCell(this);"></div>
+    	<div class="cell" id="66" onclick="currentCell(this);"></div>
+    	<div class="cell" id="67" onclick="currentCell(this);"></div>
+    	<div class="cell" id="68" onclick="currentCell(this);"></div>
+    	<div class="cell" id="69" onclick="currentCell(this);"></div>
+    	<div class="cell" id="70" onclick="currentCell(this);"></div>
+    	<div class="cell" id="71" onclick="currentCell(this);"></div>
+    	<div class="cell" id="72" onclick="currentCell(this);"></div>
+    	<div class="cell" id="73" onclick="currentCell(this);"></div>
+    	<div class="cell" id="74" onclick="currentCell(this);"></div>
+    	<div class="cell" id="75" onclick="currentCell(this);"></div>
+    	<div class="cell" id="76" onclick="currentCell(this);"></div>
+    	<div class="cell" id="77" onclick="currentCell(this);"></div>
+    	<div class="cell" id="78" onclick="currentCell(this);"></div>
+    	<div class="cell" id="79" onclick="currentCell(this);"></div>
+    	<div class="cell" id="80" onclick="currentCell(this);"></div>
+    	<div class="cell" id="81" onclick="currentCell(this);"></div>
+    	<div class="cell" id="82" onclick="currentCell(this);"></div>
+    	<div class="cell" id="83" onclick="currentCell(this);"></div>
+    	<div class="cell" id="84" onclick="currentCell(this);"></div>
+    	<div class="cell" id="85" onclick="currentCell(this);"></div>
+    	<div class="cell" id="86" onclick="currentCell(this);"></div>
+    	<div class="cell" id="87" onclick="currentCell(this);"></div>
+    	<div class="cell" id="88" onclick="currentCell(this);"></div>
+    	<div class="cell" id="89" onclick="currentCell(this);"></div>
+    	<div class="cell" id="90" onclick="currentCell(this);"></div>
+    	<div class="cell" id="91" onclick="currentCell(this);"></div>
+    	<div class="cell" id="92" onclick="currentCell(this);"></div>
+    	<div class="cell" id="93" onclick="currentCell(this);"></div>
+    	<div class="cell" id="94" onclick="currentCell(this);"></div>
+    	<div class="cell" id="95" onclick="currentCell(this);"></div>
+    	<div class="cell" id="96" onclick="currentCell(this);"></div>
+    	<div class="cell" id="97" onclick="currentCell(this);"></div>
+    	<div class="cell" id="98" onclick="currentCell(this);"></div>
+    	<div class="cell" id="99" onclick="currentCell(this);"></div>
+      <div class="cell" id="100" onclick="currentCell(this);"></div>
+      </div>
+
+    <div class="enemy_grid">
+      <p class="info" id="enemy_location">
+        ENEMY LOCATION
+      </p> <p class="info" id="Gcount"> Hit Count </p>
+      <br>
+    <div class="cell" id="101" onclick="thisOne(this);"></div>
+    <div class="cell" id="102" onclick="thisOne(this);"></div>
+    <div class="cell" id="103" onclick="thisOne(this);"></div>
+    <div class="cell" id="104" onclick="thisOne(this);"></div>
+    <div class="cell" id="105" onclick="thisOne(this);"></div>
+    <div class="cell" id="106" onclick="thisOne(this);"></div>
+    <div class="cell" id="107" onclick="thisOne(this);"></div>
+    <div class="cell" id="108" onclick="thisOne(this);"></div>
+    <div class="cell" id="109" onclick="thisOne(this);"></div>
+    <div class="cell" id="110" onclick="thisOne(this);"></div>
+    <div class="cell" id="111" onclick="thisOne(this);"></div>
+    <div class="cell" id="112" onclick="thisOne(this);"></div>
+    <div class="cell" id="113" onclick="thisOne(this);"></div>
+    <div class="cell" id="114" onclick="thisOne(this);"></div>
+    <div class="cell" id="115" onclick="thisOne(this);"></div>
+    <div class="cell" id="116" onclick="thisOne(this);"></div>
+    <div class="cell" id="117" onclick="thisOne(this);"></div>
+    <div class="cell" id="118" onclick="thisOne(this);"></div>
+    <div class="cell" id="119" onclick="thisOne(this);"></div>
+    <div class="cell" id="120" onclick="thisOne(this);"></div>
+    <div class="cell" id="121" onclick="thisOne(this);"></div>
+    <div class="cell" id="122" onclick="thisOne(this);"></div>
+    <div class="cell" id="123" onclick="thisOne(this);"></div>
+    <div class="cell" id="124" onclick="thisOne(this);"></div>
+    <div class="cell" id="125" onclick="thisOne(this);"></div>
+  	<div class="cell" id="126" onclick="thisOne(this);"></div>
+  	<div class="cell" id="127" onclick="thisOne(this);"></div>
+  	<div class="cell" id="128" onclick="thisOne(this);"></div>
+  	<div class="cell" id="129" onclick="thisOne(this);"></div>
+    <div class="cell" id="130" onclick="thisOne(this);"></div>
+  	<div class="cell" id="131" onclick="thisOne(this);"></div>
+  	<div class="cell" id="132" onclick="thisOne(this);"></div>
+  	<div class="cell" id="133" onclick="thisOne(this);"></div>
+    <div class="cell" id="134" onclick="thisOne(this);"></div>
+  	<div class="cell" id="135" onclick="thisOne(this);"></div>
+  	<div class="cell" id="136" onclick="thisOne(this);"></div>
+  	<div class="cell" id="137" onclick="thisOne(this);"></div>
+  	<div class="cell" id="138" onclick="thisOne(this);"></div>
+  	<div class="cell" id="139" onclick="thisOne(this);"></div>
+  	<div class="cell" id="140" onclick="thisOne(this);"></div>
+  	<div class="cell" id="141" onclick="thisOne(this);"></div>
+  	<div class="cell" id="142" onclick="thisOne(this);"></div>
+  	<div class="cell" id="143" onclick="thisOne(this);"></div>
+  	<div class="cell" id="144" onclick="thisOne(this);"></div>
+    <div class="cell" id="145" onclick="thisOne(this);"></div>
+  	<div class="cell" id="146" onclick="thisOne(this);"></div>
+  	<div class="cell" id="147" onclick="thisOne(this);"></div>
+  	<div class="cell" id="148" onclick="thisOne(this);"></div>
+  	<div class="cell" id="149" onclick="thisOne(this);"></div>
+    <div class="cell" id="150" onclick="thisOne(this);"></div>
+    <div class="cell" id="151" onclick="thisOne(this);"></div>
+  	<div class="cell" id="152" onclick="thisOne(this);"></div>
+  	<div class="cell" id="153" onclick="thisOne(this);"></div>
+  	<div class="cell" id="154" onclick="thisOne(this);"></div>
+  	<div class="cell" id="155" onclick="thisOne(this);"></div>
+  	<div class="cell" id="156" onclick="thisOne(this);"></div>
+  	<div class="cell" id="157" onclick="thisOne(this);"></div>
+  	<div class="cell" id="158" onclick="thisOne(this);"></div>
+    <div class="cell" id="159" onclick="thisOne(this);"></div>
+  	<div class="cell" id="160" onclick="thisOne(this);"></div>
+  	<div class="cell" id="161" onclick="thisOne(this);"></div>
+  	<div class="cell" id="162" onclick="thisOne(this);"></div>
+  	<div class="cell" id="163" onclick="thisOne(this);"></div>
+  	<div class="cell" id="164" onclick="thisOne(this);"></div>
+  	<div class="cell" id="165" onclick="thisOne(this);"></div>
+    <div class="cell" id="166" onclick="thisOne(this);"></div>
+  	<div class="cell" id="167" onclick="thisOne(this);"></div>
+  	<div class="cell" id="168" onclick="thisOne(this);"></div>
+  	<div class="cell" id="169" onclick="thisOne(this);"></div>
+  	<div class="cell" id="170" onclick="thisOne(this);"></div>
+  	<div class="cell" id="171" onclick="thisOne(this);"></div>
+  	<div class="cell" id="172" onclick="thisOne(this);"></div>
+  	<div class="cell" id="173" onclick="thisOne(this);"></div>
+  	<div class="cell" id="174" onclick="thisOne(this);"></div>
+  	<div class="cell" id="175" onclick="thisOne(this);"></div>
+  	<div class="cell" id="176" onclick="thisOne(this);"></div>
+  	<div class="cell" id="177" onclick="thisOne(this);"></div>
+    <div class="cell" id="178" onclick="thisOne(this);"></div>
+  	<div class="cell" id="179" onclick="thisOne(this);"></div>
+  	<div class="cell" id="180" onclick="thisOne(this);"></div>
+  	<div class="cell" id="181" onclick="thisOne(this);"></div>
+  	<div class="cell" id="182" onclick="thisOne(this);"></div>
+    <div class="cell" id="183" onclick="thisOne(this);"></div>
+  	<div class="cell" id="184" onclick="thisOne(this);"></div>
+  	<div class="cell" id="185" onclick="thisOne(this);"></div>
+    <div class="cell" id="186" onclick="thisOne(this);"></div>
+  	<div class="cell" id="187" onclick="thisOne(this);"></div>
+  	<div class="cell" id="188" onclick="thisOne(this);"></div>
+  	<div class="cell" id="189" onclick="thisOne(this);"></div>
+  	<div class="cell" id="190" onclick="thisOne(this);"></div>
+  	<div class="cell" id="191" onclick="thisOne(this);"></div>
+  	<div class="cell" id="192" onclick="thisOne(this);"></div>
+  	<div class="cell" id="193" onclick="thisOne(this);"></div>
+  	<div class="cell" id="194" onclick="thisOne(this);"></div>
+  	<div class="cell" id="195" onclick="thisOne(this);"></div>
+  	<div class="cell" id="196" onclick="thisOne(this);"></div>
+  	<div class="cell" id="197" onclick="thisOne(this);"></div>
+  	<div class="cell" id="198" onclick="thisOne(this);"></div>
+  	<div class="cell" id="199" onclick="thisOne(this);"></div>
+    <div class="cell" id="200" onclick="thisOne(this);"></div>
+  </div>
+  </div>
+    <div id="chat">
+      <ul id="messages"></ul>
+      <form id="mess" action="">
+        <input id="m" autocomplete="off" /><button id="b2">Send Message</button>
+      </form>
+      <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
+      <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+      <script>
+
         var socket = io();
-        $('form').submit(function(){
-          socket.emit('chat message', $('#m').val());
-          $('#m').val('');
-          return false;
+
+        $(document).ready(function(){
+
+            $("#b1").click(function() {
+                socket.emit('board', spots);
+            });
+
+            $("#b2").click(function() {
+                socket.emit('chat message', $('#m').val());
+                $('#m').val('');
+                return false;
+            });
         });
+
+        function thisOne(current) {
+          socket.emit('myside', current.id);
+          socket.emit('guess', current.id);
+        }
+
         socket.on('chat message', function(msg){
           $('#messages').append($('<li>').text(msg));
-          window.scrollTo(0, document.body.scrollHeight);
         });
-      });
-    </script>
+
+        socket.on('status', function(msg){
+          $('#status').append($('<li>').text(msg));
+        });
+
+        socket.on('guess', function(msg){
+          guessYours(msg);
+        });
+
+        socket.on('myside', function(msg){
+          guessMine(msg);
+        });
+
+        socket.on('board', function(msg){
+          // place the x's on my enemy board
+          place(msg);
+        });
+
+        var size = 17;
+        var placed = 0;
+        var hits = 0;
+        var spots =[];
+
+        /* NO LONGER NECESSARY*/
+        function start() {
+          for (i = 0; i < size; i++) {
+              cell = Math.floor(Math.random() * 100) + 101;
+              if (document.getElementById(cell).value === 'x') {
+                i--;
+              } else {
+                document.getElementById(cell).value = 'x';
+              }
+          }
+        }
+
+        function currentCell(current) {
+          if (current.value === 'x') {
+            alert("Stop it");
+          } else {
+            if (placed >= size) {
+              alert("All of your ships have been placed");
+            } else {
+              current.style.backgroundColor="hotpink";
+              current.value = 'x';
+              spots.push(current.id);
+              placed++;
+              document.getElementById("Pcount").innerHTML = 'Placed: ' + placed + ' marks.';
+            }
+          }
+        }
+
+        function guessMine(current) {
+          if (document.getElementById(current).value==='x') {
+              hits++;
+              document.getElementById(current).value='';
+              document.getElementById(current).style.backgroundColor="hotpink";
+          } else if (document.getElementById(current).style.backgroundColor!=="hotpink") {
+            document.getElementById(current).style.backgroundColor="aqua";
+          }
+          document.getElementById("Gcount").innerHTML = hits + ' hits';
+          if(victoryCheck()) {
+            alert("You win!");
+          }
+        }
+
+        function guessYours(current) {
+          var cell = +current - 100;
+          if (document.getElementById(cell).value==='x') {
+              hits++;
+              document.getElementById(cell).value='';
+              document.getElementById(cell).style.backgroundColor="black";
+          } else if (document.getElementById(cell).style.backgroundColor!=="black") {
+            document.getElementById(cell).style.backgroundColor="aqua";
+          }
+          document.getElementById("Gcount").innerHTML = hits + ' hits';
+          if(victoryCheck()) {
+            alert("You lose!");
+          }
+        }
+
+        function place(x) {
+          for (i = 0; i < x.length; i++) {
+            document.getElementById(+x[i] + 100).value='x';
+          } if (x.length === size) {
+            // all have been placed
+            socket.emit('status', 'Board sent.');
+          } spots.length = 0;
+        }
+
+        function victoryCheck() {
+          for (i = 1; i < 100; i++) {
+            if (document.getElementById(i).value === 'x') {
+              return false;
+            }
+          }
+          socket.emit('status', 'Game over.');
+          return true;
+        }
+
+        //window.onload = start;
+
+      </script>
+    </div>
+    <div id="guess">
+      <ul id="status"></ul>
+      <button id="b1">Send Board</button>
+
+    </div>
+
   </body>
 </html>
